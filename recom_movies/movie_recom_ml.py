@@ -72,3 +72,39 @@ n_pos = (Y == 1).sum()
 n_neg = (Y == 0).sum()
 print(f'{n_pos} positve samples and {n_neg} negative samples.')
 
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+
+print(len(Y_train), len(Y_test))
+
+from sklearn.naive_bayes import MultinomialNB
+
+clf = MultinomialNB(alpha=1.0, fit_prior=True)
+clf.fit(X_train, Y_train)
+
+# Prediction probabilities
+prediction_prob = clf.predict_proba(X_test)
+print(prediction_prob[0:10])
+
+# Prediction class
+prediction = clf.predict(X_test)
+print(prediction[:10])
+
+accuracy = clf.score(X_test, Y_test)
+print(f'the accuracy is: {accuracy*100: 1f}%')
+
+# Confusion Matrix 
+from sklearn.metrics import confusion_matrix
+print(confusion_matrix(Y_test, prediction, labels=[0, 1]))
+
+from sklearn.metrics import precision_score, recall_score, f1_score
+precision_score(Y_test, prediction, pos_label=1)
+recall_score(Y_test, prediction, pos_label=1)
+f1_score(Y_test, prediction, pos_label=1)
+
+f1_score(Y_test, prediction, pos_label=0)
+
+from sklearn.metrics import classification_report
+report = classification_report(Y_test, prediction)
+print(report)
